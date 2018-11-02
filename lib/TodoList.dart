@@ -1,47 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:todo2wish/main.dart';
-
-class TodoItem {
-  String title;
-  int value;
-  bool done;
-
-  TodoItem(this.title, [this.value = 0, this.done = false]);
-}
+import 'package:objectdb/objectdb.dart';
 
 class TodoList extends StatefulWidget {
+  TodoList({Key key, this.title, this.todoDB}) : super(key: key);
+
+  final String title;
+  final ObjectDB todoDB;
+
   @override
-  createState() => new TodoListState();
+  TodoListState createState() => new TodoListState();
 }
 
 class TodoListState extends State<TodoList> {
-  List<TodoItem> _todoItems = [];
+  List _tasks;
 
-  void _addTodoItem(String task) {
+  void loadTasksFromDb() async {
+    List tasks = await widget.todoDB.find({});
+    setState(() {
+      _tasks = tasks;
+    });
+  }
+
+  @override
+  void initState() {
+    this.loadTasksFromDb();
+    super.initState();
+  }
+
+  @override
+  void dispose() async {
+    await widget.todoDB.close();
+    super.dispose();
+  }
+
+  void _addTodoItem(String task) async {
     if (task.length > 0) {
-      setState(() => _todoItems.add(new TodoItem(task)));
+      await widget.todoDB.insert({'title': task, 'value': 0, 'done': false});
+      this.loadTasksFromDb();
     }
   }
 
   Widget _buildTodoList() {
-    return new ListView.builder(
-      itemBuilder: (context, index) {
-        if (index < _todoItems.length) {
-          return _buildTodoItem(_todoItems[index], index);
-        }
-      },
-    );
+    if (this._tasks == null) {
+      return Center(child: Text('Loading...'));
+    } else {
+      return ListView(
+          children: this._tasks.map((task) => _buildTodoItem(task)).toList());
+    }
   }
 
-  Widget _buildTodoItem(TodoItem item, int index) {
+  Widget _buildTodoItem(Map task) {
+    print(task);
     return new ListTile(
-      leading: item.done
+      leading: task['done']
           ? const Icon(Icons.check_box)
           : const Icon(Icons.check_box_outline_blank),
-      title: new Text(item.title),
-      trailing: new Text(item.value.toString()),
-      onTap: () => _toggleTodoItem(item),
-      onLongPress: () => _promptRemoveTodoItem(index),
+      title: new Text(task['title']),
+      trailing: new Text(task['value'].toString()),
+      onTap: () => _toggleTodoItem(task),
+      onLongPress: () => _promptRemoveTodoItem(task),
     );
   }
 
@@ -49,15 +66,15 @@ class TodoListState extends State<TodoList> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(APP_TITLE),
+        title: new Text(widget.title),
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.stars, color: Colors.yellow),
-            label: Text("152", style: TextStyle
-            (
-              color: Colors.white,
-              fontSize: 20.0,
-            )),
+            label: Text("152",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                )),
           ),
         ],
 //        bottom: TabBar(tabs: null), // TODO
@@ -96,22 +113,22 @@ class TodoListState extends State<TodoList> {
     );
   }
 
-  void _removeTodoItem(int index) {
-    setState(() => _todoItems.removeAt(index));
+  void _removeTodoItem(Map task) async {
+    await widget.todoDB.remove({'_id': task['_id']});
+    this.loadTasksFromDb();
   }
 
-  void _toggleTodoItem(TodoItem item) {
-    setState(() {
-      item.done = !item.done;
-    });
+  void _toggleTodoItem(Map task) {
+    widget.todoDB.update({'_id': task['_id']}, {'done': !task['done']});
+    this.loadTasksFromDb();
   }
 
-  void _promptRemoveTodoItem(int index) {
+  void _promptRemoveTodoItem(Map task) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text('Delete entry "${_todoItems[index].title}"?'),
+          title: new Text('Delete entry "${task['title']}"?'),
           actions: <Widget>[
             new FlatButton(
               child: new Text('CANCEL'),
@@ -120,7 +137,7 @@ class TodoListState extends State<TodoList> {
             new FlatButton(
               child: new Text('DELETE'),
               onPressed: () {
-                _removeTodoItem(index);
+                _removeTodoItem(task);
                 Navigator.of(context).pop();
               },
             ),
