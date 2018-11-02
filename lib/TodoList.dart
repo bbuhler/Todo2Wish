@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:objectdb/objectdb.dart';
 
 class TodoList extends StatefulWidget {
-  TodoList({Key key, this.title, this.todoDB}) : super(key: key);
+  TodoList({Key key, this.todoDB}) : super(key: key);
 
-  final String title;
   final ObjectDB todoDB;
 
   @override
@@ -64,56 +63,13 @@ class TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          actions: [
-            FlatButton.icon(
-              icon: Icon(Icons.stars, color: Colors.yellow),
-              label: Text("152",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                  )),
-            ),
-          ],
-        ),
-        body: TabBarView(
-          children: [
-            _buildTodoList(),
-            Container(
-              child: Text(
-                'Text with a background color',
-                style: Theme.of(context).textTheme.title,
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: new FloatingActionButton(
-//          onPressed: _pushAddTodoScreen,
-          tooltip: 'Add task',
-          child: new Icon(Icons.add),
-        ),
-        bottomNavigationBar: Container(
-          color: Theme.of(context).primaryColor,
-          child: TabBar(
-            tabs: [
-              Tab(
-                text: "TODOs",
-              ),
-              Tab(
-                text: "Wishes",
-              ),
-            ],
-            labelColor: Colors.white,
-            labelStyle: TextStyle(fontSize: 18.0),
-            indicatorWeight: 4.0,
-            indicatorColor: Colors.white,
-          ),
-        ),
+    return Scaffold(
+      floatingActionButton: new FloatingActionButton(
+        onPressed: _pushAddTodoScreen,
+        tooltip: 'Add task',
+        child: new Icon(Icons.add),
       ),
+      body: _buildTodoList(),
     );
   }
 
