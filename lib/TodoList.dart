@@ -7,7 +7,7 @@ class TodoList extends StatefulWidget {
   final ObjectDB todoDB;
 
   @override
-  TodoListState createState() => new TodoListState();
+  TodoListState createState() => TodoListState();
 }
 
 class TodoListState extends State<TodoList> {
@@ -26,11 +26,11 @@ class TodoListState extends State<TodoList> {
     super.initState();
   }
 
-  @override
-  void dispose() async {
-    await widget.todoDB.close();
-    super.dispose();
-  }
+//  @override
+//  void dispose() async {
+//    await widget.todoDB.close();
+//    super.dispose();
+//  }
 
   void _addTodoItem(String task) async {
     if (task.length > 0) {
@@ -50,12 +50,12 @@ class TodoListState extends State<TodoList> {
 
   Widget _buildTodoItem(Map task) {
     print(task);
-    return new ListTile(
+    return ListTile(
       leading: task['done']
           ? const Icon(Icons.check_box)
           : const Icon(Icons.check_box_outline_blank),
-      title: new Text(task['title']),
-      trailing: new Text(task['value'].toString()),
+      title: Text(task['title']),
+      trailing: Text(task['value'].toString()),
       onTap: () => _toggleTodoItem(task),
       onLongPress: () => _promptRemoveTodoItem(task),
     );
@@ -64,10 +64,10 @@ class TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: _pushAddTodoScreen,
         tooltip: 'Add task',
-        child: new Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
       body: _buildTodoList(),
     );
@@ -75,19 +75,19 @@ class TodoListState extends State<TodoList> {
 
   void _pushAddTodoScreen() {
     Navigator.of(context).push(
-      new MaterialPageRoute(
+      MaterialPageRoute(
         builder: (context) {
-          return new Scaffold(
-            appBar: new AppBar(
-              title: new Text('Add a new task'),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Add a task'),
             ),
-            body: new TextField(
+            body: TextField(
               autofocus: true,
               onSubmitted: (val) {
                 _addTodoItem(val);
                 Navigator.pop(context);
               },
-              decoration: new InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Enter something to do...',
                 contentPadding: const EdgeInsets.all(16.0),
               ),
@@ -112,15 +112,15 @@ class TodoListState extends State<TodoList> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('Delete entry "${task['title']}"?'),
+        return AlertDialog(
+          title: Text('Delete entry "${task['title']}"?'),
           actions: <Widget>[
-            new FlatButton(
-              child: new Text('CANCEL'),
+            FlatButton(
+              child: Text('CANCEL'),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            new FlatButton(
-              child: new Text('DELETE'),
+            FlatButton(
+              child: Text('DELETE'),
               onPressed: () {
                 _removeTodoItem(task);
                 Navigator.of(context).pop();

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:objectdb/objectdb.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:todo2wish/TodoList.dart';
+import 'package:todo2wish/WishList.dart';
 
 const APP_TITLE = 'Todo2Wish';
 
@@ -23,13 +24,13 @@ void main() async {
   wishDB = ObjectDB(appDocDir.path + '/wishes.db');
   await wishDB.open();
 
-  runApp(new TodoApp());
+  runApp(TodoApp());
 }
 
 class TodoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
         title: APP_TITLE,
         home: DefaultTabController(
           length: 2,
@@ -49,13 +50,8 @@ class TodoApp extends StatelessWidget {
             ),
             body: TabBarView(
               children: [
-                new TodoList(todoDB: todoDB),
-                Container(
-                  child: Text(
-                    'Text with a background color',
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                ),
+                TodoList(todoDB: todoDB),
+                WishList(wishDB: wishDB),
               ],
             ),
             bottomNavigationBar: Container(
@@ -63,7 +59,7 @@ class TodoApp extends StatelessWidget {
               child: TabBar(
                 tabs: [
                   Tab(
-                    text: "TODOs",
+                    text: "Tasks",
                   ),
                   Tab(
                     text: "Wishes",
