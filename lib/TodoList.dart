@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:objectdb/objectdb.dart';
+import 'package:todo2wish/Tally.dart';
 
 class TodoList extends StatefulWidget {
   TodoList({Key key, this.todoDB}) : super(key: key);
@@ -55,7 +56,7 @@ class TodoListState extends State<TodoList> {
           ? const Icon(Icons.check_box)
           : const Icon(Icons.check_box_outline_blank),
       title: Text(task['title']),
-      trailing: Text(task['value'].toString()),
+      trailing: Tally(task['value']),
       onTap: () => _toggleTodoItem(task),
       onLongPress: () => _promptRemoveTodoItem(task),
     );
