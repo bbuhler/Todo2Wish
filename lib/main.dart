@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:objectdb/objectdb.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:todo2wish/TodoList.dart';
-import 'package:todo2wish/WishList.dart';
+import 'package:todo2wish/views/TodoListView.dart';
+import 'package:todo2wish/views/WishListView.dart';
 
 const APP_TITLE = 'Todo2Wish';
 
@@ -40,11 +40,12 @@ class TodoApp extends StatelessWidget {
               actions: [
                 FlatButton.icon(
                   icon: Icon(Icons.stars, color: Colors.yellow),
-                  label: Text("152",
+                  label: Text("152", // TODO calculate value from account data
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
                       )),
+                  onPressed: () {}, // TODO show account overview
                 ),
               ],
             ),
@@ -58,12 +59,8 @@ class TodoApp extends StatelessWidget {
               color: Theme.of(context).primaryColor,
               child: TabBar(
                 tabs: [
-                  Tab(
-                    text: "Tasks",
-                  ),
-                  Tab(
-                    text: "Wishes",
-                  ),
+                  Tab(text: "Tasks"),
+                  Tab(text: "Wishes"),
                 ],
                 labelColor: Colors.white,
                 labelStyle: TextStyle(fontSize: 18.0),

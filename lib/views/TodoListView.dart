@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:objectdb/objectdb.dart';
-import 'package:todo2wish/Tally.dart';
+import 'package:todo2wish/views/NewTaskView.dart';
+import 'package:todo2wish/widgets/Tally.dart';
 
 class TodoList extends StatefulWidget {
   TodoList({Key key, this.todoDB}) : super(key: key);
@@ -77,24 +78,9 @@ class TodoListState extends State<TodoList> {
   void _pushAddTodoScreen() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Add a task'),
-            ),
-            body: TextField(
-              autofocus: true,
-              onSubmitted: (val) {
-                _addTodoItem(val);
-                Navigator.pop(context);
-              },
-              decoration: InputDecoration(
-                hintText: 'Enter something to do...',
-                contentPadding: const EdgeInsets.all(16.0),
-              ),
-            ),
-          );
-        },
+        builder: NewTaskView(
+          onCreate: _addTodoItem,
+        ).build,
       ),
     );
   }

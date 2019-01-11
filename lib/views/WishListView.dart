@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:objectdb/objectdb.dart';
+import 'package:todo2wish/views/NewWishView.dart';
 
 class WishList extends StatefulWidget {
   WishList({Key key, this.wishDB}) : super(key: key);
@@ -79,24 +80,9 @@ class WishListState extends State<WishList> {
   void _pushAddWishScreen() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Add a wish'),
-            ),
-            body: TextField(
-              autofocus: true,
-              onSubmitted: (val) {
-                _addWishItem(val);
-                Navigator.pop(context);
-              },
-              decoration: InputDecoration(
-                hintText: 'Enter a wish...',
-                contentPadding: const EdgeInsets.all(16.0),
-              ),
-            ),
-          );
-        },
+        builder: NewWishView(
+          onCreate: _addWishItem,
+        ).build,
       ),
     );
   }
