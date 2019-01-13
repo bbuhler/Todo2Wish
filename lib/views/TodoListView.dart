@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:objectdb/objectdb.dart';
+import 'package:todo2wish/models/DataProvider.dart';
 import 'package:todo2wish/views/NewTaskView.dart';
-import 'package:todo2wish/widgets/Tally.dart';
 
 class TodoList extends StatefulWidget {
-  TodoList({Key key, this.todoDB}) : super(key: key);
+  TodoList({Key key, this.db}) : super(key: key);
 
-  final ObjectDB todoDB;
+  final DataProvider db;
 
   @override
   TodoListState createState() => TodoListState();
 }
 
 class TodoListState extends State<TodoList> {
-  List _tasks;
+  List<Todo> _tasks;
 
   void loadTasksFromDb() async {
-    List tasks = await widget.todoDB.find({});
+    List<Todo> tasks = await widget.db.getTodos();
     setState(() {
       _tasks = tasks;
     });
@@ -36,7 +35,11 @@ class TodoListState extends State<TodoList> {
 
   void _addTodoItem(String task) async {
     if (task.length > 0) {
-      await widget.todoDB.insert({'title': task, 'value': 0, 'done': false});
+      Todo todo = Todo();
+      todo.title = task;
+      todo.type = TodoType.task;
+      todo.since = DateTime(2018, 12, 24);
+      await widget.db.insertTodo(todo);
       this.loadTasksFromDb();
     }
   }
@@ -50,14 +53,25 @@ class TodoListState extends State<TodoList> {
     }
   }
 
-  Widget _buildTodoItem(Map task) {
-    print(task);
+  int _calculatePoints(DateTime since) {
+    Duration duration = DateTime.now().difference(since);
+
+    if (duration.inDays > 6) {
+      return duration.inDays ~/ 7 + 3;
+    } else if (duration.inDays < 4) {
+      return duration.inHours ~/ 24;
+    } else {
+      return 3;
+    }
+  }
+
+  Widget _buildTodoItem(Todo task) {
     return ListTile(
-      leading: task['done']
+      leading: task.done != null
           ? const Icon(Icons.check_box)
           : const Icon(Icons.check_box_outline_blank),
-      title: Text(task['title']),
-      trailing: Tally(task['value']),
+      title: Text(task.title),
+      trailing: Text(_calculatePoints(task.since).toString()),
       onTap: () => _toggleTodoItem(task),
       onLongPress: () => _promptRemoveTodoItem(task),
     );
@@ -85,22 +99,29 @@ class TodoListState extends State<TodoList> {
     );
   }
 
-  void _removeTodoItem(Map task) async {
-    await widget.todoDB.remove({'_id': task['_id']});
+  void _removeTodoItem(Todo task) async {
+    await widget.db.deleteTodo(task.id);
     this.loadTasksFromDb();
   }
 
-  void _toggleTodoItem(Map task) {
-    widget.todoDB.update({'_id': task['_id']}, {'done': !task['done']});
+  void _toggleTodoItem(Todo task) {
+    if (task.done == null) {
+      task.done = DateTime.now();
+      task.value = _calculatePoints(task.since);
+    } else {
+      task.done = null;
+      task.value = null;
+    }
+    widget.db.updateTodo(task);
     this.loadTasksFromDb();
   }
 
-  void _promptRemoveTodoItem(Map task) {
+  void _promptRemoveTodoItem(Todo task) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete entry "${task['title']}"?'),
+          title: Text('Delete entry "${task.title}"?'),
           actions: <Widget>[
             FlatButton(
               child: Text('CANCEL'),

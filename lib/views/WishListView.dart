@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:objectdb/objectdb.dart';
+import 'package:todo2wish/models/DataProvider.dart';
 import 'package:todo2wish/views/NewWishView.dart';
 
 class WishList extends StatefulWidget {
-  WishList({Key key, this.wishDB}) : super(key: key);
+  WishList({Key key, this.db}) : super(key: key);
 
-  final ObjectDB wishDB;
+  final DataProvider db;
 
   @override
   WishListState createState() => WishListState();
@@ -15,7 +15,7 @@ class WishListState extends State<WishList> {
   List _wishes;
 
   void loadWishesFromDb() async {
-    List wishes = await widget.wishDB.find({});
+    List wishes = await widget.db.getTodos(TodoType.wish);
     setState(() {
       _wishes = wishes;
     });
@@ -27,15 +27,14 @@ class WishListState extends State<WishList> {
     super.initState();
   }
 
-//  @override
-//  void dispose() async {
-//    await widget.wishDB.close();
-//    super.dispose();
-//  }
-
   void _addWishItem(String wish) async {
     if (wish.length > 0) {
-      await widget.wishDB.insert({'title': wish, 'price': 100, 'done': false});
+      Todo todo = Todo();
+      todo.type = TodoType.wish;
+      todo.title = wish;
+      todo.value = -3;
+      todo.since = DateTime.now();
+      await widget.db.insertTodo(todo);
       this.loadWishesFromDb();
     }
   }
@@ -49,15 +48,14 @@ class WishListState extends State<WishList> {
     }
   }
 
-  Widget _buildWishItem(Map wish) {
-    print(wish);
+  Widget _buildWishItem(Todo wish) {
     return ListTile(
-      leading: wish['done']
+      leading: wish.done != null
           ? const Icon(Icons.check_box)
           : const Icon(Icons.check_box_outline_blank),
-      title: Text(wish['title']),
+      title: Text(wish.title),
       trailing: Text(
-        wish['price'].toString(),
+        wish.value.abs().toString(),
         style: TextStyle(color: Colors.green, fontSize: 16.0),
       ),
       onTap: () => _toggleWishItem(wish),
@@ -87,22 +85,27 @@ class WishListState extends State<WishList> {
     );
   }
 
-  void _removeWishItem(Map wish) async {
-    await widget.wishDB.remove({'_id': wish['_id']});
+  void _removeWishItem(Todo wish) async {
+    await widget.db.deleteTodo(wish.id, TodoType.wish);
     this.loadWishesFromDb();
   }
 
-  void _toggleWishItem(Map wish) {
-    widget.wishDB.update({'_id': wish['_id']}, {'done': !wish['done']});
+  void _toggleWishItem(Todo wish) {
+    if (wish.done == null) {
+      wish.done = DateTime.now();
+    } else {
+      wish.done = null;
+    }
+    widget.db.updateTodo(wish);
     this.loadWishesFromDb();
   }
 
-  void _promptRemoveWishItem(Map wish) {
+  void _promptRemoveWishItem(Todo wish) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete entry "${wish['title']}"?'),
+          title: Text('Delete entry "${wish.title}"?'),
           actions: <Widget>[
             FlatButton(
               child: Text('CANCEL'),

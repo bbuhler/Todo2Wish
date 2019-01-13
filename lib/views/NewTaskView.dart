@@ -10,8 +10,9 @@ class NewTaskView extends StatelessWidget {
   Widget build(BuildContext context) {
     Color bottomAppBarColor = Theme.of(context).bottomAppBarColor;
 
-    // TODO use a Form
+    // TODO use a Form (https://flutter.io/docs/cookbook/forms/validation)
     // TODO use floating labels?
+    // TODO reminder field? (https://github.com/serralvo/schedule_notifications)
 
     return Scaffold(
         appBar: AppBar(
