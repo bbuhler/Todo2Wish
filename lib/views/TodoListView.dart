@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:todo2wish/models/DataProvider.dart';
 import 'package:todo2wish/views/NewTaskView.dart';
 
@@ -13,6 +14,8 @@ class TodoList extends StatefulWidget {
 
 class TodoListState extends State<TodoList> {
   List<Todo> _tasks;
+  bool _floatingBtnVisible = true;
+  ScrollController _hideFloatingBtnController = ScrollController();
 
   void loadTasksFromDb() async {
     List<Todo> tasks = await widget.db.getTodos();
@@ -23,45 +26,50 @@ class TodoListState extends State<TodoList> {
 
   @override
   void initState() {
-    this.loadTasksFromDb();
+    loadTasksFromDb();
     super.initState();
+    _hideFloatingBtnController.addListener(() {
+      switch (_hideFloatingBtnController.position.userScrollDirection) {
+        case ScrollDirection.reverse:
+          setState(() {
+            _floatingBtnVisible = false;
+          });
+          break;
+
+        case ScrollDirection.forward:
+          setState(() {
+            _floatingBtnVisible = true;
+          });
+          break;
+
+        default:
+      }
+    });
   }
 
-//  @override
-//  void dispose() async {
-//    await widget.todoDB.close();
-//    super.dispose();
-//  }
-
-  void _addTodoItem(String task) async {
+  void _addTodoItem(String task, String dateSince) async {
     if (task.length > 0) {
       Todo todo = Todo();
       todo.title = task;
       todo.type = TodoType.task;
-      todo.since = DateTime(2018, 12, 24);
+      todo.since = DateTime.tryParse(dateSince) ?? DateTime.now();
       await widget.db.insertTodo(todo);
-      this.loadTasksFromDb();
+      loadTasksFromDb();
     }
   }
 
   Widget _buildTodoList() {
-    if (this._tasks == null) {
+    if (_tasks == null) {
       return Center(child: Text('Loading...'));
     } else {
-      return ListView(
-          children: this._tasks.map((task) => _buildTodoItem(task)).toList());
-    }
-  }
-
-  int _calculatePoints(DateTime since) {
-    Duration duration = DateTime.now().difference(since);
-
-    if (duration.inDays > 6) {
-      return duration.inDays ~/ 7 + 3;
-    } else if (duration.inDays < 4) {
-      return duration.inHours ~/ 24;
-    } else {
-      return 3;
+      return ListView.separated(
+        controller: _hideFloatingBtnController,
+        itemCount: _tasks.length,
+        itemBuilder: (BuildContext context, int index) =>
+            _buildTodoItem(_tasks[index]),
+        separatorBuilder: (BuildContext context, int index) =>
+            _buildSeparator(_tasks[index], _tasks[index + 1]),
+      );
     }
   }
 
@@ -71,19 +79,41 @@ class TodoListState extends State<TodoList> {
           ? const Icon(Icons.check_box)
           : const Icon(Icons.check_box_outline_blank),
       title: Text(task.title),
-      trailing: Text(_calculatePoints(task.since).toString()),
+      trailing: task.value == 0
+          ? null
+          : Text(
+              task.value.toString(),
+              style: TextStyle(color: Colors.redAccent),
+            ),
       onTap: () => _toggleTodoItem(task),
       onLongPress: () => _promptRemoveTodoItem(task),
+    );
+  }
+
+  Widget _buildSeparator(Todo currTask, Todo nextTask) {
+    if (currTask.done == null && nextTask.done != null) {
+      return ListTile(
+        title: Text('DONE', style: TextStyle(color: Colors.grey)),
+      );
+    }
+
+    // TODO find a better solution than invisible divider
+    return Divider(
+      height: 0.0,
+      color: Colors.transparent,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _pushAddTodoScreen,
-        tooltip: 'Add task',
-        child: Icon(Icons.add),
+      floatingActionButton: Opacity(
+        opacity: _floatingBtnVisible ? 1.0 : 0.0,
+        child: FloatingActionButton(
+          onPressed: _pushAddTodoScreen,
+          tooltip: 'Add task',
+          child: Icon(Icons.add),
+        ),
       ),
       body: _buildTodoList(),
     );
@@ -101,19 +131,18 @@ class TodoListState extends State<TodoList> {
 
   void _removeTodoItem(Todo task) async {
     await widget.db.deleteTodo(task.id);
-    this.loadTasksFromDb();
+    loadTasksFromDb();
   }
 
   void _toggleTodoItem(Todo task) {
     if (task.done == null) {
       task.done = DateTime.now();
-      task.value = _calculatePoints(task.since);
+      task.value = task.calculatePoints(task.since);
     } else {
       task.done = null;
-      task.value = null;
     }
     widget.db.updateTodo(task);
-    this.loadTasksFromDb();
+    loadTasksFromDb();
   }
 
   void _promptRemoveTodoItem(Todo task) {

@@ -24,13 +24,11 @@ class Todo {
       columnType: type.index,
       columnTitle: title,
       columnSince: since.millisecondsSinceEpoch,
+      columnDone: done != null ? done.millisecondsSinceEpoch : null,
       columnValue: value,
     };
     if (id != null) {
       map[columnId] = id;
-    }
-    if (done != null) {
-      map[columnDone] = done.millisecondsSinceEpoch;
     }
     return map;
   }
@@ -42,21 +40,33 @@ class Todo {
     id = map[columnId];
     type = TodoType.values[map[columnType]];
     title = map[columnTitle];
-    value = map[columnValue];
     since = DateTime.fromMillisecondsSinceEpoch(map[columnSince]);
     done = map[columnDone] != null
         ? DateTime.fromMillisecondsSinceEpoch(map[columnDone])
         : null;
+    value = map[columnValue] ?? calculatePoints(since);
+  }
+
+  int calculatePoints(DateTime since) {
+    Duration duration = DateTime.now().difference(since);
+
+    if (duration.inDays > 6) {
+      return duration.inDays ~/ 7 + 3;
+    } else if (duration.inDays < 4) {
+      return duration.inHours ~/ 24;
+    } else {
+      return 3;
+    }
   }
 }
 
 class DataProvider {
-  Database db;
+  Database _db;
 
   Future open(String path) async {
 //    await deleteDatabase(path);
 
-    db = await openDatabase(
+    _db = await openDatabase(
       path,
       version: 1,
       onCreate: (Database db, int version) async {
@@ -75,12 +85,12 @@ class DataProvider {
   }
 
   Future<Todo> insertTodo(Todo todo) async {
-    todo.id = await db.insert(tableData, todo.toMap());
+    todo.id = await _db.insert(tableData, todo.toMap());
     return todo;
   }
 
   Future<Todo> getTodo(int id, [TodoType type = TodoType.task]) async {
-    List<Map> maps = await db.query(
+    List<Map> maps = await _db.query(
       tableData,
       where: '$columnId = ? AND $columnType = ?',
       whereArgs: [id, type.index],
@@ -92,17 +102,18 @@ class DataProvider {
   }
 
   Future<List<Todo>> getTodos([TodoType type = TodoType.task]) async {
-    List<Map> maps = await db.query(
+    List<Map> maps = await _db.query(
       tableData,
       where: '$columnType = ?',
       whereArgs: [type.index],
+      orderBy: '$columnDone, $columnSince',
     );
 
     return maps.map((item) => Todo.fromMap(item)).toList();
   }
 
   Future<int> deleteTodo(int id, [TodoType type = TodoType.task]) async {
-    return await db.delete(
+    return await _db.delete(
       tableData,
       where: '$columnId = ? AND $columnType = ?',
       whereArgs: [id, type.index],
@@ -110,7 +121,7 @@ class DataProvider {
   }
 
   Future<int> updateTodo(Todo todo) async {
-    return await db.update(
+    return await _db.update(
       tableData,
       todo.toMap(),
       where: '$columnId = ?',
@@ -119,15 +130,15 @@ class DataProvider {
   }
 
   Future<int> getBalance() async {
-    List<Map> result = await db.query(
+    List<Map> result = await _db.query(
       tableData,
       columns: ['SUM($columnValue) as $columnSummary'],
       where: '$columnDone IS NOT NULL',
     );
 
     int summary = result.first[columnSummary];
-    return summary == null ? 0 : summary;
+    return summary ?? 0;
   }
 
-  Future close() async => db.close();
+  Future close() async => _db.close();
 }
