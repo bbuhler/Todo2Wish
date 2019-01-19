@@ -142,6 +142,7 @@ class TodoListState extends State<TodoList> {
       task.done = null;
     }
     widget.db.updateTodo(task);
+    widget.db.fetchBalance();
     loadTasksFromDb();
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 
 final String tableData = 'data';
@@ -61,6 +62,7 @@ class Todo {
 }
 
 class DataProvider {
+  final ValueNotifier<int> balance = ValueNotifier(null);
   Database _db;
 
   Future open(String path) async {
@@ -129,15 +131,14 @@ class DataProvider {
     );
   }
 
-  Future<int> getBalance() async {
+  Future<void> fetchBalance() async {
     List<Map> result = await _db.query(
       tableData,
       columns: ['SUM($columnValue) as $columnSummary'],
       where: '$columnDone IS NOT NULL',
     );
 
-    int summary = result.first[columnSummary];
-    return summary ?? 0;
+    balance.value = result.first[columnSummary] ?? 0;
   }
 
   Future close() async => _db.close();

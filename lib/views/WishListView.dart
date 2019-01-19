@@ -97,6 +97,7 @@ class WishListState extends State<WishList> {
       wish.done = null;
     }
     widget.db.updateTodo(wish);
+    widget.db.fetchBalance();
     this.loadWishesFromDb();
   }
 

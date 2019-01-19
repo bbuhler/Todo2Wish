@@ -11,20 +11,21 @@ class AccountButton extends StatefulWidget {
 }
 
 class AccountButtonState extends State<AccountButton> {
-  int _balance = 0;
+  int _balance;
 
   void loadLogFromDb() async {
-    int balance = await widget.db.getBalance();
-
-    setState(() {
-      _balance = balance;
-    });
+    await widget.db.fetchBalance();
   }
 
   @override
   void initState() {
-    this.loadLogFromDb();
     super.initState();
+    widget.db.balance.addListener(() {
+      setState(() {
+        _balance = widget.db.balance.value;
+      });
+    });
+    loadLogFromDb();
   }
 
   @override
@@ -32,7 +33,7 @@ class AccountButtonState extends State<AccountButton> {
     return FlatButton.icon(
       icon: Icon(Icons.stars, color: Colors.yellow),
       label: Text(
-        _balance.toString(),
+        _balance != null ? _balance.toString() : '',
         style: TextStyle(
           color: Colors.white,
           fontSize: 20.0,
