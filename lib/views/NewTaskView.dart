@@ -5,6 +5,7 @@ class NewTaskView extends StatelessWidget {
 
   final Function onCreate;
   final taskTitleCtrl = TextEditingController();
+  final sinceDateCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class NewTaskView extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.check, color: bottomAppBarColor),
               onPressed: () {
-                onCreate(taskTitleCtrl.text);
+                onCreate(taskTitleCtrl.text, sinceDateCtrl.text);
                 Navigator.pop(context);
               },
             ),
@@ -46,7 +47,19 @@ class NewTaskView extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10.0),
           child: Column(children: <Widget>[
             TextField(
-              // TODO replace with DatePicker
+              controller: sinceDateCtrl,
+              keyboardType: TextInputType.datetime,
+              onTap: () async {
+                DateTime selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(DateTime.now().year - 15),
+                  lastDate: DateTime.now(),
+                );
+                sinceDateCtrl.text = "${selectedDate.year.toString()}" +
+                    "-${selectedDate.month.toString().padLeft(2, '0')}" +
+                    "-${selectedDate.day.toString().padLeft(2, '0')}";
+              },
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.today),
                 contentPadding: const EdgeInsets.all(16.0),
@@ -56,6 +69,7 @@ class NewTaskView extends StatelessWidget {
             ),
             TextField(
               // TODO replace with DatePicker
+              keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.timer),
                 contentPadding: const EdgeInsets.all(16.0),
