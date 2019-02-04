@@ -98,10 +98,7 @@ class TodoListState extends State<TodoList> {
     }
 
     // TODO find a better solution than invisible divider
-    return Divider(
-      height: 0.0,
-      color: Colors.transparent,
-    );
+    return Divider(height: 0.0, color: Colors.transparent);
   }
 
   @override
@@ -138,12 +135,37 @@ class TodoListState extends State<TodoList> {
     if (task.done == null) {
       task.done = DateTime.now();
       task.value = task.calculatePoints(task.since);
-    } else {
+      _promptToggleTodoItem(task, 'ERLEDIGT');
+    } else if (task.calculatePoints(task.since) == task.value) {
       task.done = null;
+      _promptToggleTodoItem(task, 'UNERLEDIGT');
     }
-    widget.db.updateTodo(task);
-    widget.db.fetchBalance();
-    loadTasksFromDb();
+  }
+
+  void _promptToggleTodoItem(Todo task, String action) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(task.title),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            FlatButton(
+              child: Text(action),
+              onPressed: () {
+                widget.db.updateTodo(task);
+                widget.db.fetchBalance();
+                loadTasksFromDb();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _promptRemoveTodoItem(Todo task) {
@@ -151,14 +173,18 @@ class TodoListState extends State<TodoList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete entry "${task.title}"?'),
+          title: Text('Delete entry?'),
+          content: Text(task.title),
           actions: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
               onPressed: () => Navigator.of(context).pop(),
             ),
             FlatButton(
-              child: Text('DELETE'),
+              child: Text(
+                'DELETE',
+                style: TextStyle(color: Theme.of(context).errorColor),
+              ),
               onPressed: () {
                 _removeTodoItem(task);
                 Navigator.of(context).pop();
