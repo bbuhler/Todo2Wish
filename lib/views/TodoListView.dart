@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:todo2wish/models/DataProvider.dart';
+import 'package:todo2wish/views/BaseListView.dart';
 import 'package:todo2wish/views/NewTaskView.dart';
 
 class TodoList extends StatefulWidget {
@@ -14,37 +15,16 @@ class TodoList extends StatefulWidget {
 
 class TodoListState extends State<TodoList> {
   List<Todo> _tasks;
-  bool _floatingBtnVisible = true;
-  ScrollController _hideFloatingBtnController = ScrollController();
 
   void loadTasksFromDb() async {
     List<Todo> tasks = await widget.db.getTodos();
-    setState(() {
-      _tasks = tasks;
-    });
+    setState(() => _tasks = tasks);
   }
 
   @override
   void initState() {
     loadTasksFromDb();
     super.initState();
-    _hideFloatingBtnController.addListener(() {
-      switch (_hideFloatingBtnController.position.userScrollDirection) {
-        case ScrollDirection.reverse:
-          setState(() {
-            _floatingBtnVisible = false;
-          });
-          break;
-
-        case ScrollDirection.forward:
-          setState(() {
-            _floatingBtnVisible = true;
-          });
-          break;
-
-        default:
-      }
-    });
   }
 
   void _addTodoItem(String task, String dateSince) async {
@@ -55,21 +35,6 @@ class TodoListState extends State<TodoList> {
       todo.since = DateTime.tryParse(dateSince) ?? DateTime.now();
       await widget.db.insertTodo(todo);
       loadTasksFromDb();
-    }
-  }
-
-  Widget _buildTodoList() {
-    if (_tasks == null) {
-      return Center(child: Text('Loading...'));
-    } else {
-      return ListView.separated(
-        controller: _hideFloatingBtnController,
-        itemCount: _tasks.length,
-        itemBuilder: (BuildContext context, int index) =>
-            _buildTodoItem(_tasks[index]),
-        separatorBuilder: (BuildContext context, int index) =>
-            _buildSeparator(_tasks[index], _tasks[index + 1]),
-      );
     }
   }
 
@@ -90,29 +55,20 @@ class TodoListState extends State<TodoList> {
     );
   }
 
-  Widget _buildSeparator(Todo currTask, Todo nextTask) {
-    if (currTask.done == null && nextTask.done != null) {
-      return ListTile(
-        title: Text('DONE', style: TextStyle(color: Colors.grey)),
-      );
-    }
-
-    // TODO find a better solution than invisible divider
-    return Divider(height: 0.0, color: Colors.transparent);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: Opacity(
-        opacity: _floatingBtnVisible ? 1.0 : 0.0,
-        child: FloatingActionButton(
-          onPressed: _pushAddTodoScreen,
-          tooltip: 'Add task',
-          child: Icon(Icons.add),
-        ),
-      ),
-      body: _buildTodoList(),
+    return BaseList(
+      onAddItem: _pushAddTodoScreen,
+      openTitle: Text('TASKS'),
+      openItems: _tasks
+          .where((item) => item.done == null)
+          .map(_buildTodoItem)
+          .toList(),
+      doneTitle: Text('DONE'),
+      doneItems: _tasks
+          .where((item) => item.done != null)
+          .map(_buildTodoItem)
+          .toList(),
     );
   }
 

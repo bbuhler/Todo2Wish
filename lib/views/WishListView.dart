@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo2wish/models/DataProvider.dart';
+import 'package:todo2wish/views/BaseListView.dart';
 import 'package:todo2wish/views/NewWishView.dart';
 
 class WishList extends StatefulWidget {
@@ -12,13 +13,11 @@ class WishList extends StatefulWidget {
 }
 
 class WishListState extends State<WishList> {
-  List _wishes;
+  List<Todo> _wishes;
 
   void loadWishesFromDb() async {
     List wishes = await widget.db.getTodos(TodoType.wish);
-    setState(() {
-      _wishes = wishes;
-    });
+    setState(() => _wishes = wishes);
   }
 
   @override
@@ -39,15 +38,6 @@ class WishListState extends State<WishList> {
     }
   }
 
-  Widget _buildWishList() {
-    if (this._wishes == null) {
-      return Center(child: Text('Loading...'));
-    } else {
-      return ListView(
-          children: this._wishes.map((wish) => _buildWishItem(wish)).toList());
-    }
-  }
-
   Widget _buildWishItem(Todo wish) {
     return ListTile(
       leading: wish.done != null
@@ -65,13 +55,18 @@ class WishListState extends State<WishList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _pushAddWishScreen,
-        tooltip: 'Add wish',
-        child: Icon(Icons.add),
-      ),
-      body: _buildWishList(),
+    return BaseList(
+      onAddItem: _pushAddWishScreen,
+      openTitle: Text('WISHES'),
+      openItems: _wishes
+          .where((item) => item.done == null)
+          .map(_buildWishItem)
+          .toList(),
+      doneTitle: Text('DONE'),
+      doneItems: _wishes
+          .where((item) => item.done != null)
+          .map(_buildWishItem)
+          .toList(),
     );
   }
 
