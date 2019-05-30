@@ -57,19 +57,21 @@ class TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseList(
-      onAddItem: _pushAddTodoScreen,
-      openTitle: Text('TASKS'),
-      openItems: _tasks
-          .where((item) => item.done == null)
-          .map(_buildTodoItem)
-          .toList(),
-      doneTitle: Text('DONE'),
-      doneItems: _tasks
-          .where((item) => item.done != null)
-          .map(_buildTodoItem)
-          .toList(),
-    );
+    return _tasks != null
+        ? BaseList(
+            onAddItem: _pushAddTodoScreen,
+            openTitle: Text('TASKS'),
+            openItems: _tasks
+                .where((item) => item.done == null)
+                .map(_buildTodoItem)
+                .toList(),
+            doneTitle: Text('DONE'),
+            doneItems: _tasks
+                .where((item) => item.done != null)
+                .map(_buildTodoItem)
+                .toList(),
+          )
+        : Center(child: Text('Loading...'));
   }
 
   void _pushAddTodoScreen() {

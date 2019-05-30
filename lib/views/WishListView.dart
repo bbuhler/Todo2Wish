@@ -55,19 +55,21 @@ class WishListState extends State<WishList> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseList(
-      onAddItem: _pushAddWishScreen,
-      openTitle: Text('WISHES'),
-      openItems: _wishes
-          .where((item) => item.done == null)
-          .map(_buildWishItem)
-          .toList(),
-      doneTitle: Text('DONE'),
-      doneItems: _wishes
-          .where((item) => item.done != null)
-          .map(_buildWishItem)
-          .toList(),
-    );
+    return _wishes != null
+        ? BaseList(
+            onAddItem: _pushAddWishScreen,
+            openTitle: Text('WISHES'),
+            openItems: _wishes
+                .where((item) => item.done == null)
+                .map(_buildWishItem)
+                .toList(),
+            doneTitle: Text('DONE'),
+            doneItems: _wishes
+                .where((item) => item.done != null)
+                .map(_buildWishItem)
+                .toList(),
+          )
+        : Center(child: Text('Loading...'));
   }
 
   void _pushAddWishScreen() {
