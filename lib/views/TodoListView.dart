@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:todo2wish/models/DataProvider.dart';
-import 'package:todo2wish/views/BaseListView.dart';
+import 'package:todo2wish/views/BaseList.dart';
 import 'package:todo2wish/views/NewTaskView.dart';
 
 class TodoList extends StatefulWidget {
@@ -38,40 +38,17 @@ class TodoListState extends State<TodoList> {
     }
   }
 
-  Widget _buildTodoItem(Todo task) {
-    return ListTile(
-      leading: task.done != null
-          ? const Icon(Icons.check_box)
-          : const Icon(Icons.check_box_outline_blank),
-      title: Text(task.title),
-      trailing: task.value == 0
-          ? null
-          : Text(
-              task.value.toString(),
-              style: TextStyle(color: Colors.redAccent),
-            ),
-      onTap: () => _toggleTodoItem(task),
-      onLongPress: () => _promptRemoveTodoItem(task),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _tasks != null
-        ? BaseList(
-            onAddItem: _pushAddTodoScreen,
-            openTitle: Text('TASKS'),
-            openItems: _tasks
-                .where((item) => item.done == null)
-                .map(_buildTodoItem)
-                .toList(),
-            doneTitle: Text('DONE'),
-            doneItems: _tasks
-                .where((item) => item.done != null)
-                .map(_buildTodoItem)
-                .toList(),
-          )
-        : Center(child: Text('Loading...'));
+    return BaseList(
+      items: _tasks,
+      openTitle: Text('TASKS'),
+      doneTitle: Text('DONE'),
+      valueStyle: TextStyle(color: Colors.redAccent),
+      onAddItem: _pushAddTodoScreen,
+      onDeleteItem: _promptRemoveTodoItem,
+      onToggleItem: _toggleTodoItem,
+    );
   }
 
   void _pushAddTodoScreen() {

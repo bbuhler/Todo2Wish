@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo2wish/models/DataProvider.dart';
-import 'package:todo2wish/views/BaseListView.dart';
+import 'package:todo2wish/views/BaseList.dart';
 import 'package:todo2wish/views/NewWishView.dart';
 
 class WishList extends StatefulWidget {
@@ -38,38 +38,17 @@ class WishListState extends State<WishList> {
     }
   }
 
-  Widget _buildWishItem(Todo wish) {
-    return ListTile(
-      leading: wish.done != null
-          ? const Icon(Icons.check_box)
-          : const Icon(Icons.check_box_outline_blank),
-      title: Text(wish.title),
-      trailing: Text(
-        wish.value.abs().toString(),
-        style: TextStyle(color: Colors.green, fontSize: 16.0),
-      ),
-      onTap: () => _toggleWishItem(wish),
-      onLongPress: () => _promptRemoveWishItem(wish),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _wishes != null
-        ? BaseList(
-            onAddItem: _pushAddWishScreen,
-            openTitle: Text('WISHES'),
-            openItems: _wishes
-                .where((item) => item.done == null)
-                .map(_buildWishItem)
-                .toList(),
-            doneTitle: Text('DONE'),
-            doneItems: _wishes
-                .where((item) => item.done != null)
-                .map(_buildWishItem)
-                .toList(),
-          )
-        : Center(child: Text('Loading...'));
+    return BaseList(
+      items: _wishes,
+      openTitle: Text('WISHES'),
+      doneTitle: Text('DONE'),
+      valueStyle: TextStyle(color: Colors.green, fontSize: 16.0),
+      onAddItem: _pushAddWishScreen,
+      onToggleItem: _toggleWishItem,
+      onDeleteItem: _promptRemoveWishItem,
+    );
   }
 
   void _pushAddWishScreen() {
