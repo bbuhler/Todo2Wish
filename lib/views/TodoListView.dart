@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:todo2wish/models/DataProvider.dart';
@@ -16,68 +18,66 @@ class TodoList extends StatefulWidget {
 class TodoListState extends State<TodoList> {
   List<Todo> _tasks;
 
-  void loadTasksFromDb() async {
+  void reloadFromDb() async {
     List<Todo> tasks = await widget.db.getTodos();
     setState(() => _tasks = tasks);
   }
 
   @override
   void initState() {
-    loadTasksFromDb();
+    reloadFromDb();
     super.initState();
   }
 
-  void _addTodoItem(String task, String dateSince) async {
+  void _showAddItemScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: NewTaskView(
+          onCreate: _addItem,
+        ).build,
+      ),
+    );
+  }
+
+  void _addItem(String task, String dateSince) async {
     if (task.length > 0) {
       Todo todo = Todo();
       todo.title = task;
       todo.type = TodoType.task;
       todo.since = DateTime.tryParse(dateSince) ?? DateTime.now();
       await widget.db.insertTodo(todo);
-      loadTasksFromDb();
+      reloadFromDb();
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BaseList(
-      items: _tasks,
-      openTitle: Text('TASKS'),
-      doneTitle: Text('DONE'),
-      valueStyle: TextStyle(color: Colors.redAccent),
-      onAddItem: _pushAddTodoScreen,
-      onDeleteItem: _promptRemoveTodoItem,
-      onToggleItem: _toggleTodoItem,
-    );
+  Future<bool> _isToggleDoneAllowed(Todo task) async {
+    return task.done == null && await _toggleItemConfirm(task, 'DONE');
   }
 
-  void _pushAddTodoScreen() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: NewTaskView(
-          onCreate: _addTodoItem,
-        ).build,
-      ),
-    );
+  Future<bool> _isToggleUndoneAllowed(Todo task) async {
+    return task.done != null &&
+        task.calculatePoints(task.since) == task.value &&
+        widget.db.balance.value - task.value > 0 &&
+        await _toggleItemConfirm(task, 'UNDONE');
   }
 
-  void _removeTodoItem(Todo task) async {
-    await widget.db.deleteTodo(task.id);
-    loadTasksFromDb();
-  }
-
-  void _toggleTodoItem(Todo task) {
-    if (task.done == null) {
+  void _toggleItem(Todo task) async {
+    if (await _isToggleDoneAllowed(task)) {
       task.done = DateTime.now();
       task.value = task.calculatePoints(task.since);
-      _promptToggleTodoItem(task, 'ERLEDIGT');
-    } else if (task.calculatePoints(task.since) == task.value) {
+      widget.db.updateTodo(task);
+    } else if (await _isToggleUndoneAllowed(task)) {
       task.done = null;
-      _promptToggleTodoItem(task, 'UNERLEDIGT');
+      widget.db.updateTodo(task);
     }
+
+    widget.db.fetchBalance();
+    reloadFromDb();
   }
 
-  void _promptToggleTodoItem(Todo task, String action) {
+  Future<bool> _toggleItemConfirm(Todo task, String action) {
+    Completer<bool> completer = Completer();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -86,14 +86,15 @@ class TodoListState extends State<TodoList> {
           actions: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                completer.complete(false);
+                Navigator.of(context).pop();
+              },
             ),
             FlatButton(
               child: Text(action),
               onPressed: () {
-                widget.db.updateTodo(task);
-                widget.db.fetchBalance();
-                loadTasksFromDb();
+                completer.complete(true);
                 Navigator.of(context).pop();
               },
             ),
@@ -101,9 +102,20 @@ class TodoListState extends State<TodoList> {
         );
       },
     );
+
+    return completer.future;
   }
 
-  void _promptRemoveTodoItem(Todo task) {
+  void _removeItem(Todo task) async {
+    if (task.done == null && await _removeItemConfirm(task)) {
+      await widget.db.deleteTodo(task.id);
+      reloadFromDb();
+    }
+  }
+
+  Future<bool> _removeItemConfirm(Todo task) {
+    Completer<bool> completer = Completer();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -113,7 +125,10 @@ class TodoListState extends State<TodoList> {
           actions: <Widget>[
             FlatButton(
               child: Text('CANCEL'),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                completer.complete(false);
+                Navigator.of(context).pop();
+              },
             ),
             FlatButton(
               child: Text(
@@ -121,13 +136,28 @@ class TodoListState extends State<TodoList> {
                 style: TextStyle(color: Theme.of(context).errorColor),
               ),
               onPressed: () {
-                _removeTodoItem(task);
+                completer.complete(true);
                 Navigator.of(context).pop();
               },
             ),
           ],
         );
       },
+    );
+
+    return completer.future;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseList(
+      items: _tasks,
+      openTitle: Text('TASKS'),
+      doneTitle: Text('DONE'),
+      valueStyle: TextStyle(color: Colors.redAccent),
+      onAddItem: _showAddItemScreen,
+      onDeleteItem: _removeItem,
+      onToggleItem: _toggleItem,
     );
   }
 }

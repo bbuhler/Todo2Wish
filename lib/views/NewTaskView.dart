@@ -32,10 +32,15 @@ class NewTaskView extends StatelessWidget {
               autofocus: true,
               cursorColor: bottomAppBarColor,
               controller: taskTitleCtrl,
-              style: TextStyle(fontSize: 24.0),
+              style: TextStyle(
+                fontSize: 24.0,
+                color: bottomAppBarColor,
+              ),
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.check_box_outline_blank,
-                    color: bottomAppBarColor),
+                prefixIcon: Icon(
+                  Icons.check_box_outline_blank,
+                  color: bottomAppBarColor,
+                ),
                 contentPadding: const EdgeInsets.all(20.0),
                 hintText: 'Enter a task...',
                 hintStyle: TextStyle(color: bottomAppBarColor.withOpacity(.75)),
@@ -64,25 +69,6 @@ class NewTaskView extends StatelessWidget {
                 prefixIcon: Icon(Icons.today),
                 contentPadding: const EdgeInsets.all(16.0),
                 hintText: 'Creation date',
-                border: InputBorder.none,
-              ),
-            ),
-            TextField(
-              // TODO replace with DatePicker
-              keyboardType: TextInputType.datetime,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.timer),
-                contentPadding: const EdgeInsets.all(16.0),
-                hintText: 'Due date',
-                border: InputBorder.none,
-              ),
-            ),
-            TextField(
-              // TODO replace with Dropdown
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.sort),
-                contentPadding: const EdgeInsets.all(16.0),
-                hintText: 'Priority',
                 border: InputBorder.none,
               ),
             ),
