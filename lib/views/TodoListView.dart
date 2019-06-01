@@ -6,6 +6,8 @@ import 'package:todo2wish/models/DataProvider.dart';
 import 'package:todo2wish/views/BaseList.dart';
 import 'package:todo2wish/views/NewTaskView.dart';
 
+import '../Localizations.dart';
+
 class TodoList extends StatefulWidget {
   TodoList({Key key, this.db}) : super(key: key);
 
@@ -51,14 +53,23 @@ class TodoListState extends State<TodoList> {
   }
 
   Future<bool> _isToggleDoneAllowed(Todo task) async {
-    return task.done == null && await _toggleItemConfirm(task, 'DONE');
+    return task.done == null &&
+        await _toggleItemConfirm(
+          task,
+          MainLocalizations.of(context).tasksConfirmDone(task.title),
+          MainLocalizations.of(context).actionDone,
+        );
   }
 
   Future<bool> _isToggleUndoneAllowed(Todo task) async {
     return task.done != null &&
         task.calculatePoints(task.since) == task.value &&
         widget.db.balance.value - task.value > 0 &&
-        await _toggleItemConfirm(task, 'UNDONE');
+        await _toggleItemConfirm(
+          task,
+          MainLocalizations.of(context).tasksConfirmDone(task.title),
+          MainLocalizations.of(context).actionUndone,
+        );
   }
 
   void _toggleItem(Todo task) async {
@@ -75,17 +86,17 @@ class TodoListState extends State<TodoList> {
     reloadFromDb();
   }
 
-  Future<bool> _toggleItemConfirm(Todo task, String action) {
+  Future<bool> _toggleItemConfirm(Todo task, String title, String action) {
     Completer<bool> completer = Completer();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(task.title),
+          title: Text(title),
           actions: <Widget>[
             FlatButton(
-              child: Text('CANCEL'),
+              child: Text(MainLocalizations.of(context).actionCancel),
               onPressed: () {
                 completer.complete(false);
                 Navigator.of(context).pop();
@@ -120,11 +131,12 @@ class TodoListState extends State<TodoList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete entry?'),
+          title: Text(
+              MainLocalizations.of(context).tasksConfirmDelete(task.title)),
           content: Text(task.title),
           actions: <Widget>[
             FlatButton(
-              child: Text('CANCEL'),
+              child: Text(MainLocalizations.of(context).actionCancel),
               onPressed: () {
                 completer.complete(false);
                 Navigator.of(context).pop();
@@ -132,7 +144,7 @@ class TodoListState extends State<TodoList> {
             ),
             FlatButton(
               child: Text(
-                'DELETE',
+                MainLocalizations.of(context).actionDelete,
                 style: TextStyle(color: Theme.of(context).errorColor),
               ),
               onPressed: () {
@@ -152,8 +164,8 @@ class TodoListState extends State<TodoList> {
   Widget build(BuildContext context) {
     return BaseList(
       items: _tasks,
-      openTitle: Text('TASKS'),
-      doneTitle: Text('DONE'),
+      openTitle: MainLocalizations.of(context).tasksTitle,
+      doneTitle: MainLocalizations.of(context).tasksDone,
       valueStyle: TextStyle(color: Colors.redAccent),
       onAddItem: _showAddItemScreen,
       onDeleteItem: _removeItem,

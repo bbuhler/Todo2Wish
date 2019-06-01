@@ -1,0 +1,127 @@
+{
+  "@@last_modified": "2019-06-03T18:36:25.342378",
+  "title": "Todo2Wish",
+  "@title": {
+    "description": "Title of the application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionCancel": "CANCEL",
+  "@actionCancel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDelete": "DELETE",
+  "@actionDelete": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDone": "DONE",
+  "@actionDone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionUndone": "UNDONE",
+  "@actionUndone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionFulfill": "FULFILL",
+  "@actionFulfill": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionUnfulfilled": "UNFULFILLED",
+  "@actionUnfulfilled": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksTitle": "Tasks",
+  "@tasksTitle": {
+    "description": "Title of the tasks tab",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksDone": "Done",
+  "@tasksDone": {
+    "description": "Title of the tasks done expandable",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksNewTitleHint": "What to get done?",
+  "@tasksNewTitleHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksNewCreationDateHint": "Since when?",
+  "@tasksNewCreationDateHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksConfirmDone": "Mark task \"{taskTitle}\" as done?",
+  "@tasksConfirmDone": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "taskTitle": {}
+    }
+  },
+  "tasksConfirmDelete": "Delete task \"{taskTitle}\"?",
+  "@tasksConfirmDelete": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "taskTitle": {}
+    }
+  },
+  "wishesTitle": "Wishes",
+  "@wishesTitle": {
+    "description": "Title of the wishes tab",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesFulfilled": "Fulfilled",
+  "@wishesFulfilled": {
+    "description": "Title of the wishes fulfilled expandable",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesNewTitleHint": "What's your wish?",
+  "@wishesNewTitleHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesNewValueHint": "How much is it worth to you?",
+  "@wishesNewValueHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesConfirmFulfill": "Mark wish \"{wishTitle}\" as fulfilled?",
+  "@wishesConfirmFulfill": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "wishTitle": {}
+    }
+  },
+  "wishesConfirmUnfulfilled": "Mark wish \"{wishTitle}\" as unfulfilled?",
+  "@wishesConfirmUnfulfilled": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "wishTitle": {}
+    }
+  },
+  "wishesConfirmDelete": "Delete wish \"{wishTitle}\"?",
+  "@wishesConfirmDelete": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "wishTitle": {}
+    }
+  }
+}

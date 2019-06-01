@@ -1,0 +1,128 @@
+{
+  "@@last_modified": "2019-06-01T14:25:44.232683",
+  "@@locale": "de",
+  "title": "Todo2Wish",
+  "@title": {
+    "description": "Title of the application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionCancel": "ABBRECHEN",
+  "@actionCancel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDelete": "LÖSCHEN",
+  "@actionDelete": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionDone": "ERLEDIGT",
+  "@actionDone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionUndone": "UNERLEDIGT",
+  "@actionUndone": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionFulfill": "ERFÜLLEN",
+  "@actionFulfill": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "actionUnfulfilled": "UNERFÜLLT",
+  "@actionUnfulfilled": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksTitle": "Aufgaben",
+  "@tasksTitle": {
+    "description": "Title of the tasks tab",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksDone": "Erledigt",
+  "@tasksDone": {
+    "description": "Title of the tasks done expandable",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksNewTitleHint": "Was gibt's zu erledigen?",
+  "@tasksNewTitleHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksNewCreationDateHint": "Seit wann?",
+  "@tasksNewCreationDateHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tasksConfirmDone": "Aufgabe \"{taskTitle}\" als erledigt markieren?",
+  "@tasksConfirmDone": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "taskTitle": {}
+    }
+  },
+  "tasksConfirmDelete": "Aufgabe \"{taskTitle}\" löschen?",
+  "@tasksConfirmDelete": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "taskTitle": {}
+    }
+  },
+  "wishesTitle": "Wünsche",
+  "@wishesTitle": {
+    "description": "Title of the wishes tab",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesFulfilled": "Erfüllt",
+  "@wishesFulfilled": {
+    "description": "Title of the wishes fulfilled expandable",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesNewTitleHint": "Was ist dein Wunsch?",
+  "@wishesNewTitleHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesNewValueHint": "Wie viel ist es dir Wert?",
+  "@wishesNewValueHint": {
+    "description": "Placeholder text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishesConfirmFulfill": "Wunsch \"{wishTitle}\" als erfüllt markieren?",
+  "@wishesConfirmFulfill": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "wishTitle": {}
+    }
+  },
+  "wishesConfirmUnfulfilled": "Wunsch \"{wishTitle}\" als unerfüllt markieren?",
+  "@wishesConfirmUnfulfilled": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "wishTitle": {}
+    }
+  },
+  "wishesConfirmDelete": "Wunsch \"{wishTitle}\" löschen?",
+  "@wishesConfirmDelete": {
+    "description": "Confirmation modal question",
+    "type": "text",
+    "placeholders": {
+      "wishTitle": {}
+    }
+  }
+}

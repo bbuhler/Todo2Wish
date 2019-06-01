@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Localizations.dart';
+
 class NewTaskView extends StatelessWidget {
   NewTaskView({Key key, this.onCreate}) : super(key: key);
 
@@ -42,7 +44,7 @@ class NewTaskView extends StatelessWidget {
                   color: bottomAppBarColor,
                 ),
                 contentPadding: const EdgeInsets.all(20.0),
-                hintText: 'Enter a task...',
+                hintText: MainLocalizations.of(context).tasksNewTitleHint,
                 hintStyle: TextStyle(color: bottomAppBarColor.withOpacity(.75)),
               ),
             ),
@@ -68,7 +70,8 @@ class NewTaskView extends StatelessWidget {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.today),
                 contentPadding: const EdgeInsets.all(16.0),
-                hintText: 'Creation date',
+                hintText:
+                    MainLocalizations.of(context).tasksNewCreationDateHint,
                 border: InputBorder.none,
               ),
             ),

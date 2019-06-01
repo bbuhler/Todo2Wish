@@ -7,8 +7,8 @@ class BaseList extends StatefulWidget {
   final VoidCallback onAddItem;
   final Function onDeleteItem;
   final Function onToggleItem;
-  final Text openTitle;
-  final Text doneTitle;
+  final String openTitle;
+  final String doneTitle;
   final TextStyle valueStyle;
 
   BaseList({
@@ -74,10 +74,11 @@ class BaseListState extends State<BaseList> {
     );
   }
 
-  Widget _buildExpansionTile(Text title, List<Widget> items) {
+  Widget _buildExpansionTile(String title, List<Widget> items) {
     return items.length > 0
         ? ExpansionTile(
-            title: title,
+            title: Text(title
+                .toUpperCase()), // TODO replace uppercase with with TextStyle as soon it's supported
             initiallyExpanded: true,
             children: items,
           )

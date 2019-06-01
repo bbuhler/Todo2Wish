@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Localizations.dart';
+
 class NewWishView extends StatelessWidget {
   NewWishView({Key key, this.onCreate}) : super(key: key);
 
@@ -49,7 +51,7 @@ class NewWishView extends StatelessWidget {
                   color: bottomAppBarColor,
                 ),
                 contentPadding: const EdgeInsets.all(20.0),
-                hintText: 'Enter a wish...',
+                hintText: MainLocalizations.of(context).wishesNewTitleHint,
                 hintStyle: TextStyle(color: bottomAppBarColor.withOpacity(.75)),
               ),
             ),
@@ -66,7 +68,7 @@ class NewWishView extends StatelessWidget {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.stars),
                 contentPadding: const EdgeInsets.all(16.0),
-                hintText: 'Wish value',
+                hintText: MainLocalizations.of(context).wishesNewValueHint,
                 border: InputBorder.none,
               ),
             ),

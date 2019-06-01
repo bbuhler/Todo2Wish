@@ -5,6 +5,8 @@ import 'package:todo2wish/models/DataProvider.dart';
 import 'package:todo2wish/views/BaseList.dart';
 import 'package:todo2wish/views/NewWishView.dart';
 
+import '../Localizations.dart';
+
 class WishList extends StatefulWidget {
   WishList({Key key, this.db}) : super(key: key);
 
@@ -53,11 +55,20 @@ class WishListState extends State<WishList> {
   Future<bool> _isToggleDoneAllowed(Todo wish) async {
     return wish.done == null &&
         widget.db.balance.value >= wish.value.abs() &&
-        await _toggleItemConfirm(wish, 'FULFILL');
+        await _toggleItemConfirm(
+          wish,
+          MainLocalizations.of(context).wishesConfirmFulfill(wish.title),
+          MainLocalizations.of(context).actionFulfill,
+        );
   }
 
   Future<bool> _isToggleUndoneAllowed(Todo wish) async {
-    return wish.done != null && await _toggleItemConfirm(wish, 'UNFULFILLED');
+    return wish.done != null &&
+        await _toggleItemConfirm(
+          wish,
+          MainLocalizations.of(context).wishesConfirmUnfulfilled(wish.title),
+          MainLocalizations.of(context).actionUnfulfilled,
+        );
   }
 
   Future _toggleItem(Todo wish) async {
@@ -73,17 +84,17 @@ class WishListState extends State<WishList> {
     reloadFromDb();
   }
 
-  Future<bool> _toggleItemConfirm(Todo wish, String action) {
+  Future<bool> _toggleItemConfirm(Todo wish, String title, String action) {
     Completer<bool> completer = Completer();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(wish.title),
+          title: Text(title),
           actions: <Widget>[
             FlatButton(
-              child: Text('CANCEL'),
+              child: Text(MainLocalizations.of(context).actionCancel),
               onPressed: () {
                 completer.complete(false);
                 Navigator.of(context).pop();
@@ -118,17 +129,18 @@ class WishListState extends State<WishList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete entry "${wish.title}"?'),
+          title: Text(
+              MainLocalizations.of(context).wishesConfirmDelete(wish.title)),
           actions: <Widget>[
             FlatButton(
-              child: Text('CANCEL'),
+              child: Text(MainLocalizations.of(context).actionCancel),
               onPressed: () {
                 completer.complete(false);
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('DELETE'),
+              child: Text(MainLocalizations.of(context).actionDelete),
               onPressed: () {
                 completer.complete(true);
                 Navigator.of(context).pop();
@@ -146,8 +158,8 @@ class WishListState extends State<WishList> {
   Widget build(BuildContext context) {
     return BaseList(
       items: _wishes,
-      openTitle: Text('WISHES'),
-      doneTitle: Text('DONE'),
+      openTitle: MainLocalizations.of(context).wishesTitle,
+      doneTitle: MainLocalizations.of(context).wishesFulfilled,
       valueStyle: TextStyle(color: Colors.green, fontSize: 16.0),
       onAddItem: _showAddItemScreen,
       onToggleItem: _toggleItem,
