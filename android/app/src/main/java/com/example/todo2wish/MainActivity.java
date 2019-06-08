@@ -1,4 +1,4 @@
-package com.example.todo2wish;
+package com.github.bbuhler.todo2wish;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
