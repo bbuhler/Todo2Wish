@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:sqflite/sqflite.dart';
 import 'package:todo2wish/models/DataProvider.dart';
 import 'package:todo2wish/views/TodoListView.dart';
 import 'package:todo2wish/views/WishListView.dart';
@@ -13,10 +12,10 @@ import 'Localizations.dart';
 DataProvider db;
 
 void main() async {
-  Directory appDocDir = await getApplicationDocumentsDirectory();
+  String dbPath = await getDatabasesPath();
   db = DataProvider();
 
-  await db.open(appDocDir.path + '/todos-sql.db');
+  await db.open(path.join(dbPath, 'todos-sql.db'));
 
   runApp(TodoApp());
 }
