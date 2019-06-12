@@ -66,7 +66,7 @@ class BaseListState extends State<BaseList> {
       trailing: item.value == 0
           ? null
           : Text(
-              item.value.toString(),
+              item.value.abs().toString(),
               style: widget.valueStyle,
             ),
       onTap: () => widget.onToggleItem(item),

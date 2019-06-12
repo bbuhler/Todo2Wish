@@ -41,7 +41,7 @@ class WishListState extends State<WishList> {
   }
 
   void _addItem(String wish, int value) async {
-    if (wish.length > 0 && value != null) {
+    if (wish.length > 0 && value != null && value > 0) {
       Todo todo = Todo();
       todo.type = TodoType.wish;
       todo.title = wish;
