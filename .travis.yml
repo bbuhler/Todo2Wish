@@ -1,0 +1,50 @@
+language: android
+
+env:
+  global:
+    - secure: aPqB2QsR18AbkaVjP89aNphS/YrC0tFfVEXCF3YjHQS/cAqTLTxKWSNQcOpXd0h8Q/Wk1ZTItTQApeVInjLl3psmibuk98QvHihBgQsS2jn6SrbWl0G8SrO13OGuenx2DAXKy+Rj1Jebjgf4hKVJH/xoXIiOjvcMgeNer3NlOudIBuFheNX2rYolfm2soI5K3P9Np68Vkwqs6rTbPS/n1wKBN1Pb9XTgamKkWamgD+eUmWV9KqnCe7pDCmCodsr2Ls02VNPhExAfY5WbTAMJl78X4nZeFszlCPcctSmUiEKVi/zdG7XeLhvSmdQoXgGdEJz3AhtiSaGy+BfvG31LKFcmasEVdgRG4XN3RmKXLcyYbVbFg2bTuLjuySPNf4Z7iBNfzMjGZrk6VMwl8FbTSNT4L8s0lygXVAWjCnuE2sZXst6mRqTOMChumuLrawXQ7cnuJgTsQ4aAUJtUHjHXCUN3DXPHhgBptMNVvjJsu083Z8zz9uTGVP9qAoTNAH+IssbiPGsU9B/ZhveIVnhmJ0UbxXingFO23cwNzUuEBue0LuxDFx+q+DHMvj0RGTPPQvKnwkz7bas5nYvkFD+oDTjbu4pgN0WlxbnUebXyf6ey0/X8rUoafJmwEkGtuZUVUkZOWWrBlGMMmwzAVcIKAvmSG5QBOFWBHE42Stg9xlo=
+    - secure: dAu0plmtpzzrGf5sZp4y9U2oDiB/+/R/IhdvjDF/ZhvxBysBxUNuuIhELn8fyHrLFAmzhawk3YNNtRDNAc0P19NCxpLX5IFIGRq1pcfnUCMa3hS3ykD1fuj0wPDm505TmSqpvSf/e3/6zOR7X5m/7IxjFQBxP7cn+PKjQ5UM/6ZqweN8w8i8zEdC8p1/npHBYehCEDKD08TLqY3+pJyEnyhCJbHBa0ZcmuPqJovzMWg4UAgVgkjg5n2v4Fi4kei/u1bS8roGpTDOBDgDOq1zS1vbnXoWMGWDctM/dn1xcZwACYuh8dAcuKTFKBR3qBMDFdBj96tminBhnRk6oV4WHpBBa2W8mlVfTEW/rMYQQA6rmJ2eV3h4Utj3pxetdMcZi1clOWHnfQuoVH0AoID3o6VsX+Ecn/Srcte2EtqqfBqE1H9VTEDt3MACEaeG5xUif3Mrzqy0QTn+W4govfve/D7bEZmd7YTRZEg9uCiQUY2ZAtAGA0c7dEvg3/rxgroq9w2CvITv+Y+CJ2Pc2oups8p9JJfsfiNSDHZaQbNkngIIZwwaa196rtonOtdPTwVg/8ptfkcrNJJs+Z20jvxn3GFRhuEHMriSB40HlnaO1xnPU813i2Wi3XDPPzdL4PilDhx37cpf1/dGlqOTY4Zuuvyv930jg/M3Z2rDGAJdkpg=
+    - secure: SlmQmYjEKJuv/chfV6uicW9Hn5EZbkmc5xa3tGME9ukjZOIMd0idns6hTnvRVxIq30AG2gPkYFuE2wnOf8kJwQXERbrEou+A6iZcUsqDY6IpLe2W5tB/nKpbLwVPq9uR96GetQHLv8Kwv/+qQHAZeNEtZKtJ19YRhs/K9qgfayK84WURvPgo1FwB51qtQM5ogOyCm9WhaA4RWAJV1uRgs4piQWafodw/WJr9u838X5ku4f8MDVxoSd1jR8ifwcpzcCdl9y/7yaca+KgyuRJIlnsD6ZvxZDGyZ4HX6vUwkgfaE+CBJ/JCt+XGFyvv6nwhlcI/9ChfA4y2YXI+40hf6qHaR0a3MNNLw12wMaZsVv2nTEk34iDNRWIkmu2m7M78r+BbkKlKmgwIfxCe+cA4VG45AepAT9bQwqOgfzz0vYQ/5o274G5E7OMkuujDjOB26NNEsiHTuk50aeyy1CH1Z/uMdZq4tsBNjPAp0C80clOGoeONivDnXyhaCahWHVU7tYKD4uG46ebNx01cGLZTEMTTfA6saao5NAaLnmPAjtrdotUeveAtAw5N3jx6GIaWSfVeMJNqyZhZwGoO/fVEX2TWkoxn8CmRkm4ePlJbMGS4+qtJQLJDIAvcbuNLStgsoH/eF7hs0eZHngWtGRuNcdrwUrUsmcpTHiOUdz5x8lE=
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-28.0.3
+    - android-28
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+before_install:
+  - git clone https://github.com/flutter/flutter.git -b beta
+  - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
+  - export PATH="$PATH:`pwd`/flutter/bin"
+
+install:
+  - flutter doctor -v
+  - flutter packages get
+
+before_script:
+  - openssl aes-256-cbc -K $encrypted_26acad69892b_key -iv $encrypted_26acad69892b_iv -in android/keys/release.jks.enc -out android/keys/release.jks -d
+
+script:
+  - flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/Localizations.dart lib/l10n/intl_*.arb
+  #  - flutter test
+  - flutter build appbundle --build-number $TRAVIS_BUILD_NUMBER
+
+before_deploy:
+  - bundle install
+  - openssl aes-256-cbc -K $encrypted_319f9df1926a_key -iv $encrypted_319f9df1926a_iv -in android/keys/google-play-api-key.json.enc -out android/keys/google-play-api-key.json -d
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: cd android && bundle exec fastlane beta
+  on:
+    branch: master
+
+cache:
+  directories:
+    - $HOME/.pub-cache

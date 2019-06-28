@@ -1,0 +1,5 @@
+Die zu erledigen Aufgaben haben je eine Wertigkeit (Punkte).
+Bleibt eine Aufgabe für längere Zeit unerledigt erhöht sich ihre Wertigkeit.
+Wird eine Aufgabe erledigt bekommt man dessen Punkte  auf ein Punktekonto gutgeschrieben.
+Die Wünsche haben auch eine Wertigkeit.
+Hat man genügend Punkte für einen Wunsch auf seinem Punktekonto darf man sich diesen erfüllen.

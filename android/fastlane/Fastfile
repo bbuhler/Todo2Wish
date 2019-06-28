@@ -1,0 +1,16 @@
+skip_docs
+opt_out_usage
+
+default_platform(:android)
+
+platform :android do
+  desc "Deploy a new version to the Google Play in beta track"
+  lane :beta do
+    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/release/app.aab')
+  end
+
+  desc "Deploy a new version to the Google Play in alpha track"
+  lane :alpha do
+    upload_to_play_store(track: 'alpha', aab: '../build/app/outputs/bundle/release/app.aab')
+  end
+end
