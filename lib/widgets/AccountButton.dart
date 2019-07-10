@@ -31,13 +31,11 @@ class AccountButtonState extends State<AccountButton> {
   @override
   Widget build(BuildContext context) {
     return FlatButton.icon(
-      icon: Icon(Icons.stars, color: Colors.yellow),
+      icon: Icon(Icons.stars,
+          color: Theme.of(context).appBarTheme.actionsIconTheme.color),
       label: Text(
         _balance != null ? _balance.toString() : '',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20.0,
-        ),
+        style: Theme.of(context).appBarTheme.textTheme.title,
       ),
       onPressed: () {}, // TODO show account overview
     );

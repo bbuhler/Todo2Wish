@@ -35,6 +35,30 @@ class TodoApp extends StatelessWidget {
         const Locale('en'),
         const Locale('de'),
       ],
+      theme: Theme.of(context).copyWith(
+        primaryColor: Colors.teal[500],
+        primaryColorLight: Colors.teal[300],
+        primaryColorDark: Colors.teal[800],
+        primaryTextTheme: TextTheme(title: TextStyle(color: Colors.white)),
+        accentColor: Colors.teal[800],
+        appBarTheme: AppBarTheme(
+          actionsIconTheme: IconThemeData(color: Colors.amber[300]),
+          textTheme: TextTheme(
+            title: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+            ),
+          ),
+        ),
+        textTheme: Theme.of(context).textTheme.copyWith(
+              display1: TextStyle(fontSize: 16.0, color: Colors.pink[600]),
+              display2: TextStyle(fontSize: 16.0, color: Colors.teal[500]),
+            ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.teal[700],
+        ),
+        errorColor: Colors.pink[600],
+      ),
       home: App(),
     );
   }

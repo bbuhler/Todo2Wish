@@ -166,7 +166,7 @@ class TodoListState extends State<TodoList> {
       items: _tasks,
       openTitle: MainLocalizations.of(context).tasksTitle,
       doneTitle: MainLocalizations.of(context).tasksDone,
-      valueStyle: TextStyle(color: Colors.redAccent),
+      valueStyle: Theme.of(context).textTheme.display1,
       onAddItem: _showAddItemScreen,
       onDeleteItem: _removeItem,
       onToggleItem: _toggleItem,

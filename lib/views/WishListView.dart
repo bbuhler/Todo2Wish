@@ -160,7 +160,7 @@ class WishListState extends State<WishList> {
       items: _wishes,
       openTitle: MainLocalizations.of(context).wishesTitle,
       doneTitle: MainLocalizations.of(context).wishesFulfilled,
-      valueStyle: TextStyle(color: Colors.green, fontSize: 16.0),
+      valueStyle: Theme.of(context).textTheme.display2,
       onAddItem: _showAddItemScreen,
       onToggleItem: _toggleItem,
       onDeleteItem: _removeItem,
