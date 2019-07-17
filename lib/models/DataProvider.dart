@@ -108,7 +108,7 @@ class DataProvider {
       tableData,
       where: '$columnType = ?',
       whereArgs: [type.index],
-      orderBy: '$columnDone, $columnSince',
+      orderBy: '$columnDone DESC, $columnSince',
     );
 
     return maps.map((item) => Todo.fromMap(item)).toList();
