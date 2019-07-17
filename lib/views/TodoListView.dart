@@ -64,7 +64,7 @@ class TodoListState extends State<TodoList> {
   Future<bool> _isToggleUndoneAllowed(Todo task) async {
     return task.done != null &&
         task.calculatePoints(task.since) == task.value &&
-        widget.db.balance.value - task.value > 0 &&
+        widget.db.balance.value - task.value >= 0 &&
         await _toggleItemConfirm(
           task,
           MainLocalizations.of(context).tasksConfirmDone(task.title),
